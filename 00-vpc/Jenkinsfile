@@ -11,7 +11,7 @@ pipeline {
     options {
         timeout(time: 10, unit: 'MINUTES') 
         disableConcurrentBuilds()
-        ansiColor('xterm')
+        // ansiColor('xterm')
     }
     
     // parameters {
@@ -27,10 +27,12 @@ pipeline {
             steps {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds') {
-                        sh """
-                            cd 00-vpc
-                            terraform init
-                        """
+                        ansiColor('xterm') {
+                            sh """
+                                cd 00-vpc
+                                terraform init
+                            """
+                        }
                     }
                 }
             }
@@ -39,10 +41,12 @@ pipeline {
             steps {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds') {
-                        sh """
-                            cd 00-vpc
-                            terraform plan
-                        """
+                        ansiColor('xterm') {
+                            sh """
+                                cd 00-vpc
+                                terraform plan
+                            """
+                        }
                     }
                 }
             }
@@ -60,10 +64,12 @@ pipeline {
             steps {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-creds') {
-                        sh """
-                            cd 00-vpc
-                            terraform apply -auto-approve
-                        """
+                        ansiColor('xterm') {
+                            sh """
+                                cd 00-vpc
+                                terraform apply -auto-approve
+                            """
+                        }
                     }
                 }
             }
