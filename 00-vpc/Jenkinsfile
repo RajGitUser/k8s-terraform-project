@@ -26,7 +26,7 @@ pipeline {
         stage('Init') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
                                 cd 00-vpc
@@ -40,7 +40,7 @@ pipeline {
         stage('Plan') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
                                 cd 00-vpc
@@ -63,7 +63,7 @@ pipeline {
             
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
                                 cd 00-vpc
