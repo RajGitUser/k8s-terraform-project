@@ -14,7 +14,7 @@ crash.*.log
 *.tfplan
 
 # Sensitive variable files
-*.tfvars
+#*.tfvars
 *.tfvars.json
 
 # Override files (used for local dev/test)
