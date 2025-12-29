@@ -107,7 +107,7 @@ pipeline {
                     steps {
                         script {
                             build job: '70-acm',
-                                wait: true, // Wait for completion
+                                wait: false, // Wait for completion
                                 propagate: false // Propagate status
                         }
                     }
