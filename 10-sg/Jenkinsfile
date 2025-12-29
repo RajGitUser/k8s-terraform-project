@@ -9,7 +9,7 @@ pipeline {
         COURSE = "Jenkins"
     }
     options {
-        timeout(time: 10, unit: 'MINUTES') 
+        timeout(time: 60, unit: 'MINUTES') 
         disableConcurrentBuilds()
         // ansiColor('xterm')
     }
@@ -74,15 +74,56 @@ pipeline {
                 }
             }
         }
-        // stage('Trigger SG') {
-        //     steps {
-        //         script {
-        //             build job: '10-sg',
-        //                 wait: false, // Wait for completion
-        //                 propagate: false // Propagate status
-        //         }
-        //     }
-        // }
+        stage('Parellel Trigger'){
+            parallel {
+                stage('Bastion'){
+                    steps {
+                        script {
+                            build job: '20-bastion',
+                                wait: false, // Wait for completion
+                                propagate: false // Propagate status
+                        }
+                    }
+                }
+                stage('SG-Rules'){
+                    steps {
+                        script {
+                            build job: '30-sg-rules',
+                                wait: false, // Wait for completion
+                                propagate: false // Propagate status
+                        }
+                    }
+                }
+                stage('ACM'){
+                    steps {
+                        script {
+                            build job: '70-acm',
+                                wait: true, // Wait for completion
+                                propagate: false // Propagate status
+                        }
+                    }
+                }
+            
+                stage('EKS'){
+                    steps {
+                        script {
+                            build job: '90-eks',
+                                wait: false, // Wait for completion
+                                propagate: false // Propagate status
+                        }
+                    }
+                }
+            }
+        }
+        stage('ingress ALB'){
+            steps {
+                script {
+                    build job: '80-ingress-alb',
+                        wait: false, // Wait for completion
+                        propagate: false // Propagate status
+                }
+            }
+        }   
     }
     post{
         always{
