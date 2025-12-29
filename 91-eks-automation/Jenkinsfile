@@ -9,7 +9,7 @@ pipeline {
         COURSE = "Jenkins"
     }
     options {
-        timeout(time: 60, unit: 'MINUTES') 
+        timeout(time: 10, unit: 'MINUTES') 
         disableConcurrentBuilds()
         // ansiColor('xterm')
     }
@@ -29,7 +29,7 @@ pipeline {
                     withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
-                                cd 10-sg
+                                cd 91-eks-automation
                                 terraform init
                             """
                         }
@@ -43,7 +43,7 @@ pipeline {
                     withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
-                                cd 10-sg
+                                cd 91-eks-automation
                                 terraform plan
                             """
                         }
@@ -66,7 +66,7 @@ pipeline {
                     withAWS(region:'us-east-1',credentials:'aws-cred') {
                         ansiColor('xterm') {
                             sh """
-                                cd 10-sg
+                                cd 91-eks-automation
                                 terraform apply -auto-approve
                             """
                         }
@@ -74,56 +74,15 @@ pipeline {
                 }
             }
         }
-        stage('Parellel Trigger'){
-            parallel {
-                stage('Bastion'){
-                    steps {
-                        script {
-                            build job: '20-bastion',
-                                wait: false, // Wait for completion
-                                propagate: false // Propagate status
-                        }
-                    }
-                }
-                stage('SG-Rules'){
-                    steps {
-                        script {
-                            build job: '30-sg-rules',
-                                wait: false, // Wait for completion
-                                propagate: false // Propagate status
-                        }
-                    }
-                }
-                stage('ACM'){
-                    steps {
-                        script {
-                            build job: '70-acm',
-                                wait: true, // Wait for completion
-                                propagate: false // Propagate status
-                        }
-                    }
-                }
-            
-                stage('EKS'){
-                    steps {
-                        script {
-                            build job: '91-eks-automation',
-                                wait: false, // Wait for completion
-                                propagate: false // Propagate status
-                        }
-                    }
-                }
-            }
-        }
-        stage('ingress ALB'){
+        stage('Trigger SG') {
             steps {
                 script {
-                    build job: '80-ingress-alb',
+                    build job: '10-sg',
                         wait: false, // Wait for completion
                         propagate: false // Propagate status
                 }
             }
-        }   
+        }
     }
     post{
         always{
